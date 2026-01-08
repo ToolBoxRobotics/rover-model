@@ -1,5 +1,21 @@
 # rover-model
 
+### 1. System Architecture & Network Setup
+#### Concept:
+* Master (PC): Runs computationally heavy tasks (Rviz, Navigation Stack, MoveIt for the arm, SLAM).
+* Slave (RPi 4): Runs hardware drivers (rosserial, Kinect drivers) and publishes sensor data.
+
+#### Network Configuration (On both machines):
+1. Connect both to the same Wi-Fi/Ethernet.
+2. Edit ``/etc/hosts`` to add each other's IP addresses and hostnames.
+3. On PC (``.bashrc``):
+```bash
+export ROS_MASTER_URI=http://PC_IP:11311
+export ROS_HOSTNAME=PC_IP
+```
+
+
+
 
 ### 1. Project Overview
 Goal: Build a 6-wheeled all-terrain rover with a 5-axis robotic manipulator capable of autonomous navigation, mapping (SLAM), and remote manipulation. Platform: ROS Noetic (Ubuntu 20.04). Compute Architecture:
