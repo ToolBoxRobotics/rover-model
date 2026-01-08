@@ -26,15 +26,42 @@ export ROS_HOSTNAME=RPI_IP
 
 #### Dependencies:
 
-* ros_lib (Install via Arduino Library Manager or generate using rosrun rosserial_arduino make_libraries.py .)
+* ``ros_lib`` (Install via Arduino Library Manager or generate using ``rosrun rosserial_arduino make_libraries.py`` .)
+* ``PinChangeInterrupt`` (Required because Mega has only 6 hardware interrupts, but you have 12 encoder channels).
+* `` Wire.h``, ``Servo.h``, ``Adafruit_MPU6050``, ``Adafruit_INA219``.
 
-* PinChangeInterrupt (Required because Mega has only 6 hardware interrupts, but you have 12 encoder channels).
+Sketch (``rover_base.ino``):
 
-* Wire.h, Servo.h, Adafruit_MPU6050, Adafruit_INA219.
+#
 
-Sketch (rover_base.ino):
+### 3. Arduino Mega #2: The Robotic Arm
+#### Responsibilities: 
+Control 5 Stepper motors (NEMA17 + A4988), read 5 Limit Switches.
 
+Dependencies: ``AccelStepper`` library.
+Sketch (``rover_arm.ino``):
 
+#
+
+### 4. ROS Environment (RPi Side)
+You need a launch file to start the camera and the serial connections to the Arduinos.
+
+#### Prerequisites:
+```bash
+sudo apt install ros-noetic-rosserial-python ros-noetic-freenect-launch
+```
+``rover_drivers.launch``:
+
+#
+
+### 5. ROS Environment (PC Side)
+The PC handles the "brains": converting velocity commands to wheel speeds (Inverse Kinematics) and Navigation.
+
+### Inverse Kinematics Node (Python):
+
+Since you have 6 wheels and 4 steering servos, simple differential drive (skid steer) logic isn't enough. You need a node that subscribes to ``cmd_vel`` (geometry_msgs/Twist) and publishes the ``rover/drive_cmd`` array expected by Arduino #1.
+
+File: ``rover_control/scripts/kinematics.py`` (Simplified snippet):
 
 
 
