@@ -10,7 +10,7 @@ Goal: Build a 6-wheeled all-terrain rover with a 5-axis robotic manipulator capa
 #
 
 ### 2. Hardware Topology
-```
+```txt
 Subsystem       Components                               Connection                           Function
 
 Mobility,       6x 12V DC Motors (83 RPM) + Encoders,    Arduino Mega #1 (PWM/Interrupts),    Traction & Odometry
@@ -28,10 +28,66 @@ Manipulation,   5x NEMA17 Steppers + A4988 Drivers,      Arduino Mega #2,       
 - ``rover_base.ino`` : Controls the 6 DC motors and 4 Servos. Publishes raw encoder ticks and IMU data to ROS.
 - ``rover_arm.ino`` : Controls the 5 stepper motors. Includes a safety ENABLE feature (Pin 32) and homing calibration logic.
 
-Level 2: Drivers & Network (Raspberry Pi)rover_drivers.launch: The startup script that launches the Kinect drivers (compressed for Wi-Fi), establishes serial links to both Arduinos, and starts the system health monitor.health_monitor.py: A diagnostic node reporting Battery Voltage, CPU Temperature, and Wi-Fi Signal Strength.
+#### Level 2: Drivers & Network (Raspberry Pi)
+- ``rover_drivers.launch`` : The startup script that launches the Kinect drivers (compressed for Wi-Fi), establishes serial links to both Arduinos, and starts the system health monitor.
+- ``health_monitor.py`` : A diagnostic node reporting Battery Voltage, CPU Temperature, and Wi-Fi Signal Strength.
 
-Level 3: Perception & Navigation (PC)RTAB-Map: Performs SLAM (Simultaneous Localization and Mapping) using the Kinect's RGB-D stream for Visual Odometry.Move Base: Uses the map to plan paths.Global Planner: Finds the optimal route across the known map.Local Planner (DWA): Avoids dynamic obstacles using a "Fake Laser Scan" generated from the depth camera.kinematics.py: Converts the Navigation stack's simple velocity commands (cmd_vel) into complex 6-wheel speeds and 4-corner steering angles.
+#### Level 3: Perception & Navigation (PC)
+- RTAB-Map: Performs SLAM (Simultaneous Localization and Mapping) using the Kinect's RGB-D stream for Visual Odometry.
+- Move Base: Uses the map to plan paths.
+  - Global Planner: Finds the optimal route across the known map.
+  - Local Planner (DWA): Avoids dynamic obstacles using a "Fake Laser Scan" generated from the depth camera.
+- ``kinematics.py`` : Converts the Navigation stack's simple velocity commands (cmd_vel) into complex 6-wheel speeds and 4-corner steering angles.
 
-Level 4: Manipulation (PC)MoveIt: Calculates Inverse Kinematics (IK) to move the arm's end-effector to a specific X, Y, Z coordinate without self-collision.arm_bridge.py: A translation node that takes MoveIt's abstract joint angles and converts them into specific stepper motor step counts for Arduino #2.
+#### Level 4: Manipulation (PC)
+- MoveIt: Calculates Inverse Kinematics (IK) to move the arm's end-effector to a specific X, Y, Z coordinate without self-collision.
+- ``arm_bridge.py`` : A translation node that takes MoveIt's abstract joint angles and converts them into specific stepper motor step counts for Arduino #2.
 
-Level 5: Control Interfacesautonomous_mission.py: A "Mission Commander" script that sequences tasks: Undock Arm $\to$ Navigate to Coordinate $\to$ Deploy Arm $\to$ Dig $\to$ Return Home.Web Dashboard: An HTML5/JS interface hosted on the robot, allowing control via any browser (Phone/Laptop). It features a live camera feed, virtual joystick, arm sliders, and battery stats.
+#### Level 5: Control Interfaces
+- ``autonomous_mission.py`` : A "Mission Commander" script that sequences tasks: Undock Arm $\to$ Navigate to Coordinate $\to$ Deploy Arm $\to$ Dig $\to$ Return Home.
+- Web Dashboard: An HTML5/JS interface hosted on the robot, allowing control via any browser (Phone/Laptop). It features a live camera feed, virtual joystick, arm sliders, and battery stats.
+
+#
+
+### 4. Final Directory Structure
+This is the workspace organization created for the project.
+```txt
+~/catkin_ws/src/
+├── rover_pkg/                       # [RPi] HARDWARE INTERFACE
+│   ├── firmware/                    # Arduino Sketches
+│   │   ├── rover_base/rover_base.ino
+│   │   └── rover_arm/rover_arm.ino
+│   ├── launch/rover_drivers.launch  # Main RPi Launch
+│   └── scripts/health_monitor.py    # Diagnostics
+│
+├── rover_control/                   # [PC] AI & NAVIGATION
+│   ├── config/                      # Nav Stack Parameters (Costmaps)
+│   ├── launch/
+│   │   ├── rover_slam.launch        # Mapping
+│   │   ├── rover_nav.launch         # Autonomous Driving
+│   │   ├── rover_complete.launch    # Full System Start
+│   │   └── rover_webui.launch       # Web Server
+│   ├── scripts/
+│   │   ├── kinematics.py            # Wheel Control Logic
+│   │   ├── arm_bridge.py            # MoveIt -> Arduino Bridge
+│   │   └── autonomous_mission.py    # Auto-Mission Script
+│   └── webui/index.html             # Dashboard Interface
+│
+├── rover_description/               # [PC] PHYSICAL MODEL
+│   └── urdf/rover.urdf              # Robot dimensions & joints
+│
+└── rover_moveit_config/             # [PC] ARM CONFIG
+    └── ... (Generated by Setup Assistant)
+```
+
+#
+
+### 5. Next Step
+Your system is fully defined. To begin construction:
+
+  1. Flash the Arduinos.
+  2. Build the catkin workspace on both machines.
+  3. Launch rover_drivers.launch on the Pi.
+  4. Launch rover_webui.launch on the PC and open your browser to verify the connection.
+
+#
