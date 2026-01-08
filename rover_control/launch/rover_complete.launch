@@ -1,1 +1,13 @@
+<launch>
+  <param name="robot_description" textfile="$(find rover_description)/urdf/rover.urdf" />
 
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <include file="$(find rover_moveit_config)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="fake_execution" value="true"/> </include>
+
+  <node name="arm_bridge" pkg="rover_control" type="arm_bridge.py" output="screen" />
+  
+  <include file="$(find rover_control)/launch/rover_nav.launch" />
+</launch>
