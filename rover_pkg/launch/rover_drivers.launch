@@ -1,7 +1,15 @@
 <launch>
   <include file="$(find freenect_launch)/launch/freenect.launch">
     <arg name="depth_registration" value="true" />
-    <arg name="publish_tf" value="false" /> </include>
+    
+    <arg name="processing" value="false" /> 
+    <arg name="rgb_processing" value="false" />
+    <arg name="ir_processing" value="false" />
+    <arg name="depth_processing" value="false" />
+    <arg name="depth_registered_processing" value="false" />
+    <arg name="disparity_processing" value="false" />
+    <arg name="disparity_registered_processing" value="false" />
+  </include>
 
   <node pkg="rosserial_python" type="serial_node.py" name="serial_base">
     <param name="port" value="/dev/ttyACM0"/> <param name="baud" value="57600"/>
@@ -10,4 +18,7 @@
   <node pkg="rosserial_python" type="serial_node.py" name="serial_arm">
     <param name="port" value="/dev/ttyACM1"/> <param name="baud" value="57600"/>
   </node>
+  
+  <node pkg="tf" type="static_transform_publisher" name="base_to_camera" 
+        args="0.2 0 0.3 0 0 0 base_link camera_link 100" />
 </launch>
