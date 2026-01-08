@@ -1,0 +1,17 @@
+obstacle_range: 2.5
+raytrace_range: 3.0
+
+# Shape of the rover (meters) - Adjust based on your real size (0.5m x 0.4m from previous step)
+footprint: [[0.3, 0.25], [0.3, -0.25], [-0.3, -0.25], [-0.3, 0.25]]
+# inflation_radius: 0.55  # clear space around robot
+
+observation_sources: kinect_scan
+
+kinect_scan: {
+  data_type: LaserScan, 
+  topic: /scan, 
+  marking: true, 
+  clearing: true,
+  min_obstacle_height: 0.1, 
+  max_obstacle_height: 2.0
+}
