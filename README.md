@@ -14,8 +14,7 @@ sudo apt install ros-noetic-rosserial-python ros-noetic-freenect-launch
 ```
 
 
-## How to Run It
-
+## 2. How to Run It
 #### On Raspberry Pi (SSH terminal 1):
 ```Bash
 roslaunch rover_pkg rover_drivers.launch
@@ -27,9 +26,12 @@ roslaunch rover_pkg rover_drivers.launch
 rosparam set /camera/rgb/image_rect_color/compressed/jpeg_quality 50
 rosparam set /camera/depth_registered/image_raw/compressedDepth/depth_max 10.0
 
+roslaunch rover_control rover_nav.launch
+or
 roslaunch rover_control rover_slam.launch
-```
 
+```
+Run your python kinematics script (``python3 kinematics.py``).
 
 #
 #
