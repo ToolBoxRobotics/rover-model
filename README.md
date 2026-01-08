@@ -13,9 +13,35 @@
 export ROS_MASTER_URI=http://PC_IP:11311
 export ROS_HOSTNAME=PC_IP
 ```
+4. On RPi (``.bashrc``):
+```bash
+export ROS_MASTER_URI=http://PC_IP:11311
+export ROS_HOSTNAME=RPI_IP
+```
+#
+
+### 2. Arduino Mega #1: The Mobile Base
+#### Responsibilities: 
+6x Drive Motors, 6x Encoders, 4x Steering Servos, IMU, Power Sensor.
+
+#### Dependencies:
+
+* ros_lib (Install via Arduino Library Manager or generate using rosrun rosserial_arduino make_libraries.py .)
+
+* PinChangeInterrupt (Required because Mega has only 6 hardware interrupts, but you have 12 encoder channels).
+
+* Wire.h, Servo.h, Adafruit_MPU6050, Adafruit_INA219.
+
+Sketch (rover_base.ino):
 
 
 
+
+
+
+
+
+#
 
 ### 1. Project Overview
 Goal: Build a 6-wheeled all-terrain rover with a 5-axis robotic manipulator capable of autonomous navigation, mapping (SLAM), and remote manipulation. Platform: ROS Noetic (Ubuntu 20.04). Compute Architecture:
