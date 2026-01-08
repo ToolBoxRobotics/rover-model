@@ -1,5 +1,40 @@
 # rover-model
 
+
+## 1. Install Dependencies 
+#### (On PC)
+We need the navigation stack and a tool to convert the Kinect's 3D depth into a 2D "laser scan" for simpler obstacle avoidance.
+```bash
+sudo apt install ros-noetic-move-base ros-noetic-dwa-local-planner ros-noetic-depthimage-to-laserscan ros-noetic-map-server
+```
+
+#### (On RPI)
+```bash
+sudo apt install ros-noetic-rosserial-python ros-noetic-freenect-launch
+```
+
+
+## How to Run It
+
+#### On Raspberry Pi (SSH terminal 1):
+```Bash
+roslaunch rover_pkg rover_drivers.launch
+```
+#### On PC (Terminal 1):
+
+``` Bash
+# Ensure network compression is enabled for image transport
+rosparam set /camera/rgb/image_rect_color/compressed/jpeg_quality 50
+rosparam set /camera/depth_registered/image_raw/compressedDepth/depth_max 10.0
+
+roslaunch rover_control rover_slam.launch
+```
+
+
+#
+#
+#
+
 ### 1. System Architecture & Network Setup
 #### Concept:
 * Master (PC): Runs computationally heavy tasks (Rviz, Navigation Stack, MoveIt for the arm, SLAM).
