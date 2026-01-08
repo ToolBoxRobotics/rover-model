@@ -1,1 +1,13 @@
+<launch>
+  <include file="$(find freenect_launch)/launch/freenect.launch">
+    <arg name="depth_registration" value="true" />
+    <arg name="publish_tf" value="false" /> </include>
 
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_base">
+    <param name="port" value="/dev/ttyACM0"/> <param name="baud" value="57600"/>
+  </node>
+
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_arm">
+    <param name="port" value="/dev/ttyACM1"/> <param name="baud" value="57600"/>
+  </node>
+</launch>
